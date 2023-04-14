@@ -27,4 +27,10 @@ public class SampleController {
         return new ResponseMessage(MessageCode.SUCCESS, sampleResponseDto);
     }
 
+    @GetMapping(value = "/sample/error")
+    public ResponseMessage<String> errorSample(){
+        sampleService.errorSample();
+        return new ResponseMessage(MessageCode.SUCCESS, null);
+    }
+
 }

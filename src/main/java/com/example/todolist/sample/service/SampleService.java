@@ -1,5 +1,7 @@
 package com.example.todolist.sample.service;
 
+import com.example.todolist.common.exception.CustomException;
+import com.example.todolist.common.exception.ErrorCode;
 import com.example.todolist.sample.dao.SampleDao;
 import com.example.todolist.sample.dto.SampleRequestDto;
 import com.example.todolist.sample.dto.SampleResponseDto;
@@ -17,5 +19,9 @@ public class SampleService {
 
     public SampleResponseDto searchSample(Long id) {
         return sampleDao.sampleSearch(id);
+    }
+
+    public void errorSample() {
+        throw new CustomException(ErrorCode.SERVER_ERROR);
     }
 }
