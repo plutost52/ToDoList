@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.todolist.card.dao.CardDao">
+
+    <insert id="createCard">
+        INSERT INTO CARD
+        (
+            MEMBER_NO,
+            CARD_TITLE,
+            CARD_DONE,
+            CARD_CREATETIME
+        )
+        VALUES
+        (
+            #{memberNo},
+            #{cardTitle},
+            0,
+            now()
+        )
+    </insert>
+
+</mapper>
