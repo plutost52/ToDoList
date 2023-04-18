@@ -24,4 +24,15 @@ public class CardDto {
         this.cardCreateAt = cardCreateAt;
     }
 
+    @Override
+    public String toString() {
+        return "CardDto{" +
+                "cardNo=" + cardNo +
+                ", memberNo=" + memberNo +
+                ", cardTitle='" + cardTitle + '\'' +
+                ", cardDone=" + cardDone +
+                ", cardCreateAt='" + cardCreateAt + '\'' +
+                '}';
+    }
+
 }

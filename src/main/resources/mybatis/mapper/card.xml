@@ -3,6 +3,14 @@
 
 <mapper namespace="com.example.todolist.card.dao.CardDao">
 
+    <resultMap id="cardList" type="com.example.todolist.card.dto.CardDto">
+        <id property="cardNo" column="CARD_NO"/>
+        <result property="memberNo" column="MEMBER_NO"/>
+        <result property="cardTitle" column="CARD_TITLE"/>
+        <result property="cardDone" column="CARD_DONE"/>
+        <result property="cardCreateAt" column="CARD_CREATETIME"/>
+    </resultMap>
+
     <insert id="createCard">
         INSERT INTO CARD
         (
@@ -19,5 +27,19 @@
             now()
         )
     </insert>
+    
+    <delete id="deleteCard">
+        DELETE FROM CARD
+            WHERE CARD_NO in
+            <foreach item="cardNo" index="i" collection="cardNoArr"
+                open = "(" separator = "," close=")">
+                #{cardNo}
+            </foreach>
+    </delete>
+
+    <select id="listCard" resultMap="cardList">
+        SELECT * FROM CARD
+        WHERE MEMBER_NO = #{memberNo}
+    </select>
 
 </mapper>
