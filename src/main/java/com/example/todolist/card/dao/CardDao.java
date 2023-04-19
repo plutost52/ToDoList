@@ -9,10 +9,10 @@ import java.util.List;
 @Mapper
 public interface CardDao {
 
-    int createCard (CardDto cardDto);
+    Long createCard (Long memberNo);
 
-    int deleteCard (int[] cardNoArr);
+    Long deleteCard (Long[] cardNoArr);
 
-    List<CardDto> listCard(int memberNo);
+    List<CardDto> listCard(Long memberNo);
 
 }

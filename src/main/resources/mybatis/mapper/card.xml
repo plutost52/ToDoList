@@ -22,7 +22,7 @@
         VALUES
         (
             #{memberNo},
-            #{cardTitle},
+            "",
             0,
             now()
         )
