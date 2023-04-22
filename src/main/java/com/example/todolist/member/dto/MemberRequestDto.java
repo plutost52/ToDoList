@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MemberRequestDto {
+    private Long memberNo;
     private String memberEmail;
     private String memberPwd;
     private String memberName;

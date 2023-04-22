@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
     SERVER_ERROR("알 수 없는 서버 에러가 발생했습니다.", 500),
+    AUTH_FAIL("해당 작업에 대한 권한이 없습니다.", 403),
     EMAIL_DUPLICATED("이미 존재하는 이메일입니다.", 500),
     NICKNAME_DUPLICATED("이미 존재하는 닉네임입니다.", 500),
     MEMBER_NOT_FOUND("알 수 없는 사용자입니다.", 404),

@@ -3,6 +3,17 @@
 
 <mapper namespace="com.example.todolist.member.dao.MemberDao">
 
+    <select id="findById" resultType="com.example.todolist.member.dto.MemberDto">
+        SELECT MEMBER_NO
+             ,MEMBER_EMAIL
+             ,MEMBER_PWD
+             ,MEMBER_NAME
+             ,MEMBER_NICKNAME
+        FROM MEMBER
+        WHERE MEMBER_NO = #{memberNo}
+
+    </select>
+
     <select id="findByEmail" resultType="com.example.todolist.member.dto.MemberDto">
         SELECT MEMBER_NO
              ,MEMBER_EMAIL
@@ -49,5 +60,20 @@
              ,MEMBER_NICKNAME
         FROM MEMBER
         WHERE MEMBER_EMAIL = #{memberEmail}
+    </select>
+
+    <update id="updateMember">
+        UPDATE MEMBER
+           SET MEMBER_PWD      = IFNULL(#{memberPwd}, MEMBER_PWD),
+               MEMBER_NICKNAME = IFNULL(#{memberNickname}, MEMBER_NICKNAME)
+         WHERE MEMBER_NO = #{memberNo}
+    </update>
+
+    <select id="findByString" resultType="com.example.todolist.member.dto.MemberResponseDto">
+        SELECT MEMBER_NO
+             ,MEMBER_NICKNAME
+        FROM MEMBER
+        WHERE MEMBER_NICKNAME like CONCAT('%', #{search}, '%')
+
     </select>
 </mapper>
