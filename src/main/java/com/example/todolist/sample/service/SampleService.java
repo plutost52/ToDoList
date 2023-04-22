@@ -14,6 +14,7 @@ public class SampleService {
 
     private final SampleDao sampleDao;
     public void createSample(SampleRequestDto sampleRequestDto) {
+
         sampleDao.sampleCreate(sampleRequestDto);
     }
 

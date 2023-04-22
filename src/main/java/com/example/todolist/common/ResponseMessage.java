@@ -1,5 +1,6 @@
 package com.example.todolist.common;
 
+import com.example.todolist.common.exception.ErrorCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 
@@ -19,6 +20,12 @@ public class ResponseMessage<T> {
     public ResponseMessage(MessageCode messageCode, T data){
         this.msg = messageCode.getMsg();
         this.statusCode = MessageCode.SUCCESS.getStatusCode();
+        this.data = data;
+    }
+
+    public ResponseMessage(ErrorCode errorCode, T data) {
+        this.msg = errorCode.getMsg();
+        this.statusCode = errorCode.getStatusCode();
         this.data = data;
     }
 
