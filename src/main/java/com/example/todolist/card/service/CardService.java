@@ -7,12 +7,15 @@ import com.example.todolist.cardLine.dao.CardLineDao;
 import com.example.todolist.cardLine.dto.CardLineDto;
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
+import com.example.todolist.member.dto.MemberDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import java.net.http.HttpRequest;
 import java.sql.Array;
 import java.util.*;
 
@@ -23,9 +26,9 @@ public class CardService {
     private final CardDao cardDao;
     private final CardLineDao cardLineDao;
 
-    public void createCard(Long memberNo) {
+    public void createCard(MemberDto member) {
 
-        Long result = cardDao.createCard(memberNo);
+        Long result = cardDao.createCard(member.getMemberNo());
         if (result == 0)
             throw new CustomException(ErrorCode.CARD_CREATE_FAILED);
     };
@@ -58,9 +61,11 @@ public class CardService {
         return result;
     };
 
-    public List<CardDto> listCard(Long memberNo, String type) {
+    public List<CardDto> listCard(MemberDto member, HttpServletRequest request) {
 
         List<CardDto> result = new ArrayList<CardDto>();
+        Long memberNo = member.getMemberNo();
+        String type = request.getRequestURI().contains("shared") ? "shared" : "my";
 
         if (memberNo <= 0)
             throw new CustomException(ErrorCode.CARD_LIST_BADREQUEST);

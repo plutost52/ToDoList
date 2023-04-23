@@ -7,7 +7,9 @@ import com.example.todolist.common.MessageCode;
 import com.example.todolist.common.ResponseMessage;
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
+import com.example.todolist.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,12 +23,9 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping(value = "/card")
-    public ResponseMessage<String> createCard() {
+    public ResponseMessage<String> createCard(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        // 임시 Member Number 설정
-        Long memberNo = 1L;
-
-        cardService.createCard(memberNo);
+        cardService.createCard(userDetails.getMember());
         return new ResponseMessage(MessageCode.CARD_CREATE_SUCCESS, null);
     }
 
@@ -45,14 +44,9 @@ public class CardController {
     }
 
     @GetMapping(value = { "/card", "card/shared" })
-    public ResponseMessage<String> listCard(HttpServletRequest request) {
+    public ResponseMessage<String> listCard(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
 
-        // 임시 Member Number 설정
-        Long memberNo = 1L;
-
-        String type = request.getRequestURI().contains("shared") ? "shared" : "my";
-
-        List<CardDto> cardList = cardService.listCard(memberNo, type);
+        List<CardDto> cardList = cardService.listCard(userDetails.getMember(), request);
         return new ResponseMessage(MessageCode.CARD_LIST_SUCCESS, cardList);
     }
 
@@ -64,15 +58,12 @@ public class CardController {
     }
 
     @PutMapping(value = { "/card/done", "/card/shared/done" })
-    public ResponseMessage<String> updateCardDone(HttpServletRequest request, @RequestBody CardRequestDto cardRequest) {
-
-        // 임시 Member Number 설정
-        Long memberNo = 1L;
-
-        String type = request.getRequestURI().contains("shared") ? "shared" : "my";
+    public ResponseMessage<String> updateCardDone(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                  HttpServletRequest request,
+                                                  @RequestBody CardRequestDto cardRequest) {
 
         cardService.updateCardDone(cardRequest);
-        List<CardDto> cardList = cardService.listCard(memberNo, type);
+        List<CardDto> cardList = cardService.listCard(userDetails.getMember(), request);
         return new ResponseMessage(MessageCode.CARD_UPDATEDONE_SUCCESS, cardList);
     }
 
