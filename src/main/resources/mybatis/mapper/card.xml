@@ -3,6 +3,14 @@
 
 <mapper namespace="com.example.todolist.card.dao.CardDao">
 
+    <resultMap id="cardList" type="com.example.todolist.card.dto.CardDto">
+        <id property="cardNo" column="CARD_NO"/>
+        <result property="memberNo" column="MEMBER_NO"/>
+        <result property="cardTitle" column="CARD_TITLE"/>
+        <result property="cardDone" column="CARD_DONE"/>
+        <result property="cardCreateAt" column="CARD_CREATETIME"/>
+    </resultMap>
+
     <insert id="createCard">
         INSERT INTO CARD
         (
@@ -14,10 +22,49 @@
         VALUES
         (
             #{memberNo},
-            #{cardTitle},
+            "",
             0,
             now()
         )
     </insert>
+    
+    <delete id="deleteCard">
+        DELETE FROM CARD
+        WHERE CARD_NO in
+        <foreach item="cardNo" index="i" collection="cardNoArr"
+            open = "(" separator = "," close=")">
+            #{cardNo}
+        </foreach>
+    </delete>
+
+    <select id="readCard" resultType="com.example.todolist.card.dto.CardDto">
+        SELECT
+            CARD_NO AS cardNo,
+            MEMBER_NO AS memberNo,
+            CARD_TITLE AS cardTitle,
+            CARD_DONE AS cardDone,
+            CARD_CREATETIME AS cardCreateAt
+        FROM CARD
+        WHERE CARD_NO = #{cardNo}
+    </select>
+
+    <select id="listCard" resultMap="cardList">
+        SELECT * FROM CARD
+        WHERE MEMBER_NO = #{memberNo}
+    </select>
+
+    <update id="updateCardTitle">
+        UPDATE CARD SET CARD_TITLE = #{cardTitle}
+        WHERE CARD_NO = #{cardNo}
+    </update>
+
+    <update id="updateCardDone">
+        UPDATE CARD SET CARD_DONE = #{cardDone}
+        WHERE CARD_NO in
+        <foreach item="cardNo" index="i" collection="cardNoArr"
+                 open = "(" separator = "," close=")">
+            #{cardNo}
+        </foreach>
+    </update>
 
 </mapper>

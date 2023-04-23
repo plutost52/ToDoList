@@ -1,9 +1,13 @@
 package com.example.todolist.card.dto;
 
+import com.example.todolist.cardLine.dto.CardLineDto;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter @Setter
+import java.util.List;
+
+@Getter @Setter @NoArgsConstructor
 public class CardDto {
 
     private Long cardNo;
@@ -11,10 +15,7 @@ public class CardDto {
     private String cardTitle;
     private Boolean cardDone;
     private String cardCreateAt;
-
-    public CardDto() {
-
-    }
+    private List<CardLineDto> cardLine;
 
     public CardDto(Long cardNo, Long memberNo, String cardTitle, Boolean cardDone, String cardCreateAt) {
         this.cardNo = cardNo;
@@ -22,6 +23,27 @@ public class CardDto {
         this.cardTitle = cardTitle;
         this.cardDone = cardDone;
         this.cardCreateAt = cardCreateAt;
+    }
+
+    @Override
+    public String toString() {
+
+        String result = "CardDto {" +
+                "\ncardNo=" + cardNo +
+                "\nmemberNo=" + memberNo +
+                "\ncardTitle='" + cardTitle + '\'' +
+                "\ncardDone=" + cardDone +
+                "\ncardCreateAt='" + cardCreateAt + '\'' +
+                "\ncardLine=[ ";
+
+        String cardLines = "";
+        if (cardLine != null) {
+            for (Long i = 0L; i.intValue() < cardLine.size(); i++)
+                cardLines += "\n    " + i + " : " + cardLine.get(i.intValue()).toString();
+        }
+        result += cardLines + " ] }";
+
+        return result;
     }
 
 }
