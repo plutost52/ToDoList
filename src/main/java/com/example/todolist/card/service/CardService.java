@@ -2,11 +2,15 @@ package com.example.todolist.card.service;
 
 import com.example.todolist.card.dao.CardDao;
 import com.example.todolist.card.dto.CardDto;
+import com.example.todolist.card.dto.CardRequestDto;
 import com.example.todolist.cardLine.dao.CardLineDao;
 import com.example.todolist.cardLine.dto.CardLineDto;
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
 
 import java.sql.Array;
@@ -20,22 +24,19 @@ public class CardService {
     private final CardLineDao cardLineDao;
 
     public void createCard(Long memberNo) {
+
         Long result = cardDao.createCard(memberNo);
         if (result == 0)
             throw new CustomException(ErrorCode.CARD_CREATE_FAILED);
     };
 
-    public void deleteCard(String noArr) {
+    public void deleteCard(CardRequestDto requestBody) {
 
-        if (noArr.length() < 0)
+        Long[] cardNoArr = requestBody.getCardNo();
+
+        if (cardNoArr == null || cardNoArr.length < 0)
             throw new CustomException(ErrorCode.CARD_DELETE_BADREQUEST);
         else {
-
-            String[] strArr = noArr.split(",");
-            Long[] cardNoArr = new Long[strArr.length];
-            for (Long i = 0L; i < strArr.length; i++)
-                cardNoArr[i.intValue()] = Long.parseLong(strArr[i.intValue()]);
-            System.out.println("card List : " + Arrays.toString(cardNoArr));
 
             Long result = cardDao.deleteCard(cardNoArr);
             if (result == 0)
@@ -45,11 +46,24 @@ public class CardService {
 
     }
 
+    public CardDto readCard(Long cardNo) {
+
+        if (cardNo <= 0L)
+            throw new CustomException(ErrorCode.CARD_READ_BADREQUEST);
+
+        CardDto result = cardDao.readCard(cardNo);
+        if (result == null)
+            throw new CustomException(ErrorCode.CARD_READ_FAILED);
+        result.setCardLine(cardLineDao.listCardLine(new Long[] { result.getCardNo() }));
+        return result;
+    };
+
     public List<CardDto> listCard(Long memberNo, String type) {
 
-        System.out.println("[ Service ] MemberNo : " + memberNo + " / type : " + type);
-
         List<CardDto> result = new ArrayList<CardDto>();
+
+        if (memberNo <= 0)
+            throw new CustomException(ErrorCode.CARD_LIST_BADREQUEST);
 
         if (type.equals("my")) {
 
@@ -81,15 +95,40 @@ public class CardService {
 
             result = cardList;
 
-            for (CardDto card : result) {
-                System.out.println(card.toString());
-            }
-
         } else {
 
         }
 
         return result;
     };
+
+    public void updateCardTitle(Long cardNo, CardRequestDto cardRequest) {
+
+        String cardTitle = cardRequest.getCardTitle();
+
+        if (cardNo <= 0 || cardTitle == "")
+            throw new CustomException(ErrorCode.CARD_UPDATE_TITLE_BADREQUEST);
+        Long result = cardDao.updateCardTitle(cardNo, cardTitle);
+        System.out.println(result);
+
+        if (result == 0)
+            throw new CustomException(ErrorCode.CARD_UPDATE_TITLE_FAILED);
+
+    }
+
+    public void updateCardDone(CardRequestDto cardRequest) {
+
+        Boolean cardDone = cardRequest.getCardDone();
+        Long[] cardNoArr = cardRequest.getCardNo();
+
+        if (cardDone == null || cardNoArr == null || cardNoArr.length <= 0)
+            throw new CustomException(ErrorCode.CARD_UPDATE_DONE_BADREQUEST);
+
+        Long result = cardDao.updateCardDone(cardDone, cardNoArr);
+
+        if (result == 0)
+            throw new CustomException(ErrorCode.CARD_UPDATE_DONE_FAILED);
+
+    }
 
 }

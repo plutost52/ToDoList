@@ -13,6 +13,12 @@ public interface CardDao {
 
     Long deleteCard (Long[] cardNoArr);
 
+    CardDto readCard (Long cardNo);
+
     List<CardDto> listCard(Long memberNo);
+
+    Long updateCardTitle (Long cardNo, String cardTitle);
+
+    Long updateCardDone (Boolean cardDone, Long[] cardNoArr);
 
 }

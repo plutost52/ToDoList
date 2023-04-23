@@ -1,6 +1,7 @@
 package com.example.todolist.card.controller;
 
 import com.example.todolist.card.dto.CardDto;
+import com.example.todolist.card.dto.CardRequestDto;
 import com.example.todolist.card.service.CardService;
 import com.example.todolist.common.MessageCode;
 import com.example.todolist.common.ResponseMessage;
@@ -20,7 +21,7 @@ public class CardController {
     private final CardService cardService;
 
     @PostMapping(value = "/card")
-    public ResponseMessage<String> createCard() throws Exception {
+    public ResponseMessage<String> createCard() {
 
         // 임시 Member Number 설정
         Long memberNo = 1L;
@@ -29,15 +30,22 @@ public class CardController {
         return new ResponseMessage(MessageCode.CARD_CREATE_SUCCESS, null);
     }
 
-    @DeleteMapping(value = "/card/{cardNo}")
-    public ResponseMessage<String> deleteCard(@PathVariable("cardNo") String noArr) throws Exception {
+    @DeleteMapping(value = "/card")
+    public ResponseMessage<String> deleteCard(@RequestBody CardRequestDto cardRequest) {
 
-        cardService.deleteCard(noArr);
+        cardService.deleteCard(cardRequest);
         return new ResponseMessage(MessageCode.CARD_DELETE_SUCCESS, null);
     }
 
+    @GetMapping(value = "/card/{cardNo}")
+    public ResponseMessage<String> readCard(@PathVariable("cardNo") Long cardNo) {
+
+        CardDto card = cardService.readCard(cardNo);
+        return new ResponseMessage(MessageCode.CARD_READ_SUCCESS, card);
+    }
+
     @GetMapping(value = { "/card", "card/shared" })
-    public ResponseMessage<String> listCard(HttpServletRequest request) throws Exception {
+    public ResponseMessage<String> listCard(HttpServletRequest request) {
 
         // 임시 Member Number 설정
         Long memberNo = 1L;
@@ -45,7 +53,27 @@ public class CardController {
         String type = request.getRequestURI().contains("shared") ? "shared" : "my";
 
         List<CardDto> cardList = cardService.listCard(memberNo, type);
-        return new ResponseMessage(MessageCode.CARD_LIST_SUCCESS, null);
+        return new ResponseMessage(MessageCode.CARD_LIST_SUCCESS, cardList);
+    }
+
+    @PutMapping(value = "/card/{cardNo}")
+    public ResponseMessage<String> updateCardTitle(@PathVariable("cardNo") Long cardNo, @RequestBody CardRequestDto cardRequest) {
+
+        cardService.updateCardTitle(cardNo, cardRequest);
+        return new ResponseMessage(MessageCode.CARD_UPDATETITLE_SUCCESS, null);
+    }
+
+    @PutMapping(value = { "/card/done", "/card/shared/done" })
+    public ResponseMessage<String> updateCardDone(HttpServletRequest request, @RequestBody CardRequestDto cardRequest) {
+
+        // 임시 Member Number 설정
+        Long memberNo = 1L;
+
+        String type = request.getRequestURI().contains("shared") ? "shared" : "my";
+
+        cardService.updateCardDone(cardRequest);
+        List<CardDto> cardList = cardService.listCard(memberNo, type);
+        return new ResponseMessage(MessageCode.CARD_UPDATEDONE_SUCCESS, cardList);
     }
 
 }
