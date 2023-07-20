@@ -2,6 +2,7 @@ package com.example.todolist.member.controller;
 
 import com.example.todolist.common.MessageCode;
 import com.example.todolist.common.ResponseMessage;
+import com.example.todolist.member.dto.MemberDto;
 import com.example.todolist.member.dto.MemberRequestDto;
 import com.example.todolist.member.dto.MemberResponseDto;
 import com.example.todolist.member.dto.MemberSearchDto;
@@ -28,8 +29,8 @@ public class MemberController {
 
     @PostMapping(value = "/member/login")
     public ResponseMessage<?> login(@RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response){
-        memberService.login(memberRequestDto, response);
-        return new ResponseMessage<>(MessageCode.SUCCESS, null);
+        MemberDto memberDto = memberService.login(memberRequestDto, response);
+        return new ResponseMessage<>(MessageCode.SUCCESS, memberDto);
     }
 
     @PatchMapping(value = "/member")

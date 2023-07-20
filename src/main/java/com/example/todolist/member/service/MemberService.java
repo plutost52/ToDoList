@@ -41,7 +41,7 @@ public class MemberService {
     }
 
 
-    public void login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
+    public MemberDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
 
         MemberDto memberDto = memberDao.findByEmail(memberRequestDto.getMemberEmail());
         if(memberDto == null) throw new CustomException(ErrorCode.NOT_FOUND_EMAIL);
@@ -51,6 +51,8 @@ public class MemberService {
         }
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(memberDto.getMemberEmail()));
+        return memberDto;
+
     }
 
     public void update(MemberDto requestMember, MemberRequestDto memberRequestDto) {
