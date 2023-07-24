@@ -36,7 +36,7 @@ public class MemberService {
         if(member != null) throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
 
         member = memberRepository.findByMemberNickname(memberRequestDto.getMemberNickname());
-        log.info("member >>> " + member.getMemberEmail());
+
         if(member != null) throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
 
         String encodingPwd = passwordEncoder.encode(memberRequestDto.getMemberPwd());
