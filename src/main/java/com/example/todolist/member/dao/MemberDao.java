@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
+@Deprecated
 public interface MemberDao {
     void createMember(MemberRequestDto memberRequestDto);
 

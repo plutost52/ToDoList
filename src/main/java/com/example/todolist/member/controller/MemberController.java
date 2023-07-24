@@ -9,12 +9,14 @@ import com.example.todolist.member.dto.MemberSearchDto;
 import com.example.todolist.member.service.MemberService;
 import com.example.todolist.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MemberController {

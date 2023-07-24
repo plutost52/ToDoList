@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.sql.ResultSet;
 import java.util.List;
-
+@Deprecated
 @Mapper
 public interface CardDao {
 
