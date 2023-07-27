@@ -7,16 +7,11 @@ import com.example.todolist.cardLine.dao.CardLineDao;
 import com.example.todolist.cardLine.dto.CardLineDto;
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
-import com.example.todolist.member.dto.MemberDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.example.todolist.member.entity.Member;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.http.HttpRequest;
-import java.sql.Array;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -26,7 +21,7 @@ public class CardService {
     private final CardDao cardDao;
     private final CardLineDao cardLineDao;
 
-    public void createCard(MemberDto member) {
+    public void createCard(Member member) {
 
         Long result = cardDao.createCard(member.getMemberNo());
         if (result == 0)
@@ -61,7 +56,7 @@ public class CardService {
         return result;
     };
 
-    public List<CardDto> listCard(MemberDto member, HttpServletRequest request) {
+    public List<CardDto> listCard(Member member, HttpServletRequest request) {
 
         List<CardDto> result = new ArrayList<CardDto>();
         Long memberNo = member.getMemberNo();

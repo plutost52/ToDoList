@@ -31,6 +31,9 @@ public class Member extends TimeStamp {
     @Column(nullable = false)
     String memberNickname;
 
-
+    public void update(String memberPwd, String memberNickname){
+        this.memberPwd = memberPwd == null ? this.memberPwd : memberPwd;
+        this.memberNickname = memberNickname == null ? this.memberNickname : memberNickname;
+    }
 
 }

@@ -31,6 +31,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
+    @Transactional
     public void createMember(MemberRequestDto memberRequestDto) {
 
         Member member = memberRepository.findByMemberEmail(memberRequestDto.getMemberEmail());
@@ -57,7 +58,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-
+    @Transactional
     public MemberResponseDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
 
         Member member = memberRepository.findByMemberEmail(memberRequestDto.getMemberEmail());
@@ -74,32 +75,35 @@ public class MemberService {
 
     }
 
-    public void update(MemberDto requestMember, MemberRequestDto memberRequestDto) {
+    @Transactional
+    public void update(Member member, MemberRequestDto memberRequestDto) {
 
-        MemberDto memberDto = memberDao.findById(memberRequestDto.getMemberNo());
-        if(memberDto == null) throw new CustomException(ErrorCode.MEMBER_NOT_FOUND);
+        Member isNicknameDuplicated = memberRepository.findByMemberNickname(memberRequestDto.getMemberNickname());
+        if(isNicknameDuplicated != null) throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
 
-        if(requestMember.getMemberNo() != memberDto.getMemberNo()) throw new CustomException(ErrorCode.AUTH_FAIL);
+        if(memberRequestDto.getMemberPwd() != null) {
+            String encodingPwd = passwordEncoder.encode(memberRequestDto.getMemberPwd());
+            memberRequestDto.updatePwdEncoding(encodingPwd);
+        }
 
-        memberDto = memberDao.findByNickname(memberRequestDto.getMemberNickname());
-        if(memberDto != null) throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
+        Member updateMember = memberRepository.findById(member.getMemberNo()).get();
+        updateMember.update(memberRequestDto.getMemberPwd(), memberRequestDto.getMemberNickname());
 
-        String encodingPwd = passwordEncoder.encode(memberRequestDto.getMemberPwd());
-        memberRequestDto.updatePwdEncoding(encodingPwd);
-
-        memberDao.updateMember(memberRequestDto);
     }
 
+    @Transactional(readOnly = true)
     public void checkEmail(MemberRequestDto memberRequestDto) {
         MemberDto memberDto = memberDao.findByEmail(memberRequestDto.getMemberEmail());
         if(memberDto != null) throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
     }
 
+    @Transactional(readOnly = true)
     public void checkNickname(MemberRequestDto memberRequestDto) {
         MemberDto memberDto = memberDao.findByNickname(memberRequestDto.getMemberNickname());
         if(memberDto != null) throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
     }
 
+    @Transactional(readOnly = true)
     public List<MemberResponseDto> findByString(MemberSearchDto memberSearchDto) {
         System.out.println("input search : " + memberSearchDto.getSearch());
         List<MemberResponseDto> memberResponseDtos = memberDao.findByString(memberSearchDto);
