@@ -31,8 +31,8 @@ public class MemberController {
 
     @PostMapping(value = "/member/login")
     public ResponseMessage<?> login(@RequestBody MemberRequestDto memberRequestDto, HttpServletResponse response){
-        MemberDto memberDto = memberService.login(memberRequestDto, response);
-        return new ResponseMessage<>(MessageCode.SUCCESS, memberDto);
+        MemberResponseDto memberResponseDto = memberService.login(memberRequestDto, response);
+        return new ResponseMessage<>(MessageCode.SUCCESS, memberResponseDto);
     }
 
     @PatchMapping(value = "/member")

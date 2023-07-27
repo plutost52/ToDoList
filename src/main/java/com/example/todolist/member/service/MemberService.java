@@ -8,6 +8,7 @@ import com.example.todolist.member.dto.MemberRequestDto;
 import com.example.todolist.member.dto.MemberResponseDto;
 import com.example.todolist.member.dto.MemberSearchDto;
 import com.example.todolist.member.entity.Member;
+import com.example.todolist.member.mapper.MemberMapper;
 import com.example.todolist.member.repository.MemberRepository;
 import com.example.todolist.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -57,17 +58,19 @@ public class MemberService {
     }
 
 
-    public MemberDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
+    public MemberResponseDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
 
-        MemberDto memberDto = memberDao.findByEmail(memberRequestDto.getMemberEmail());
-        if(memberDto == null) throw new CustomException(ErrorCode.NOT_FOUND_EMAIL);
+        Member member = memberRepository.findByMemberEmail(memberRequestDto.getMemberEmail());
+        if(member == null) throw new CustomException(ErrorCode.NOT_FOUND_EMAIL);
 
-        if(!passwordEncoder.matches(memberRequestDto.getMemberPwd(), memberDto.getMemberPwd())) {
+        if(!passwordEncoder.matches(memberRequestDto.getMemberPwd(), member.getMemberPwd())) {
             throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
         }
 
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(memberDto.getMemberEmail()));
-        return memberDto;
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getMemberEmail()));
+        MemberResponseDto responseDto = MemberMapper.INSTANCE.memberToResponseDto(member);
+
+        return MemberMapper.INSTANCE.memberToResponseDto(member);
 
     }
 
