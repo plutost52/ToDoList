@@ -2,11 +2,8 @@ package com.example.todolist.member.service;
 
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
-import com.example.todolist.member.dao.MemberDao;
-import com.example.todolist.member.dto.MemberDto;
 import com.example.todolist.member.dto.MemberRequestDto;
 import com.example.todolist.member.dto.MemberResponseDto;
-import com.example.todolist.member.dto.MemberSearchDto;
 import com.example.todolist.member.entity.Member;
 import com.example.todolist.member.mapper.MemberMapper;
 import com.example.todolist.member.repository.MemberRepository;
@@ -25,8 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MemberService {
-
-    private final MemberDao memberDao;
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
