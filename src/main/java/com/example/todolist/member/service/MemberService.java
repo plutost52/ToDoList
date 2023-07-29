@@ -93,14 +93,14 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public void checkEmail(MemberRequestDto memberRequestDto) {
-        MemberDto memberDto = memberDao.findByEmail(memberRequestDto.getMemberEmail());
-        if(memberDto != null) throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
+        Member member = memberRepository.findByMemberEmail(memberRequestDto.getMemberEmail());
+        if(member != null) throw new CustomException(ErrorCode.EMAIL_DUPLICATED);
     }
 
     @Transactional(readOnly = true)
     public void checkNickname(MemberRequestDto memberRequestDto) {
-        MemberDto memberDto = memberDao.findByNickname(memberRequestDto.getMemberNickname());
-        if(memberDto != null) throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
+        Member member = memberRepository.findByMemberNickname(memberRequestDto.getMemberNickname());
+        if(member != null) throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
     }
 
     @Transactional(readOnly = true)
