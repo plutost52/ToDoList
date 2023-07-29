@@ -55,8 +55,8 @@ public class MemberController {
     }
 
     @GetMapping(value = "/member")
-    public ResponseMessage<List<MemberResponseDto>> searchMember(@RequestBody MemberSearchDto memberSearchDto){
-        List<MemberResponseDto> memberResponseDtos = memberService.findByString(memberSearchDto);
+    public ResponseMessage<List<MemberResponseDto>> searchMember(@RequestParam String search){
+        List<MemberResponseDto> memberResponseDtos = memberService.findByString(search);
         return new ResponseMessage<>(MessageCode.SUCCESS, memberResponseDtos);
     }
 

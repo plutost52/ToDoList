@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -104,12 +105,16 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public List<MemberResponseDto> findByString(MemberSearchDto memberSearchDto) {
-        System.out.println("input search : " + memberSearchDto.getSearch());
-        List<MemberResponseDto> memberResponseDtos = memberDao.findByString(memberSearchDto);
-        for (MemberResponseDto m:memberResponseDtos) {
-            System.out.println(m.getMemberNo() + " ::: " + m.getMemberNickname());
+    public List<MemberResponseDto> findByString(String search) {
+
+        if("".equals(search) || search == null) throw new CustomException(ErrorCode.SEARCH_KEYWORD_NOT_BLACK);
+        List<Member> members = memberRepository.findByMemberNicknameContaining(search);
+
+        List<MemberResponseDto> memberResponseDtoList = new ArrayList<>();
+
+        for (Member member :members) {
+            memberResponseDtoList.add(MemberMapper.INSTANCE.memberToResponseDto(member));
         }
-        return memberResponseDtos;
+        return memberResponseDtoList;
     }
 }
