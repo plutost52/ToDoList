@@ -1,11 +1,16 @@
 package com.example.todolist.member.service;
 
+import com.example.todolist.common.MessageCode;
+import com.example.todolist.common.ResponseMessage;
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
+import com.example.todolist.common.type.ConnectType;
 import com.example.todolist.member.dto.MemberRequestDto;
 import com.example.todolist.member.dto.MemberResponseDto;
+import com.example.todolist.member.entity.ConnectLog;
 import com.example.todolist.member.entity.Member;
 import com.example.todolist.member.mapper.MemberMapper;
+import com.example.todolist.member.repository.ConnectLogRepository;
 import com.example.todolist.member.repository.MemberRepository;
 import com.example.todolist.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +30,7 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ConnectLogRepository connectLogRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -36,14 +43,7 @@ public class MemberService {
         member = memberRepository.findByMemberNickname(memberRequestDto.getMemberNickname());
 
         if(member != null) throw new CustomException(ErrorCode.NICKNAME_DUPLICATED);
-
         String encodingPwd = passwordEncoder.encode(memberRequestDto.getMemberPwd());
-
-        /**
-         *  It will be deprecated
-        memberRequestDto.updatePwdEncoding(encodingPwd);
-        memberDao.createMember(memberRequestDto);
-        */
 
         member = Member.builder()
                 .memberEmail(memberRequestDto.getMemberEmail())
@@ -55,20 +55,41 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberResponseDto login(MemberRequestDto memberRequestDto, HttpServletResponse response) {
+    public ResponseMessage login(MemberRequestDto memberRequestDto, HttpServletResponse response) throws CustomException{
 
         Member member = memberRepository.findByMemberEmail(memberRequestDto.getMemberEmail());
+
         if(member == null) throw new CustomException(ErrorCode.NOT_FOUND_EMAIL);
 
+        if(member.getLockedAt()!=null && member.getLockedAt().plusMinutes(5).isAfter(LocalDateTime.now())) {
+            return new ResponseMessage(ErrorCode.LOCKED_MEMBER, member.getLockedAt());
+        }else if(member.getLockedAt()!=null && member.getLockedAt().plusMinutes(5).isBefore(LocalDateTime.now())){
+            member.logInTryCountUpdate(true);
+            member.unLockMember();
+        }
+
         if(!passwordEncoder.matches(memberRequestDto.getMemberPwd(), member.getMemberPwd())) {
-            throw new CustomException(ErrorCode.INCORRECT_PASSWORD);
+            member.logInTryCountUpdate(false);
+            log.info("login with incorrect password - try count {}", member.getLogInTryCount());
+            int loginTryCount = member.getLogInTryCount();
+            if(loginTryCount >= 5) {
+                member.lockMember();
+                return new ResponseMessage(ErrorCode.LOCKED_MEMBER, member.getLockedAt());
+            }
+            return new ResponseMessage<>(ErrorCode.INCORRECT_PASSWORD, member.getLogInTryCount());
         }
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(member.getMemberEmail()));
-        MemberResponseDto responseDto = MemberMapper.INSTANCE.memberToResponseDto(member);
+        member.logInTryCountUpdate(true);
 
-        return MemberMapper.INSTANCE.memberToResponseDto(member);
+        connectLogRepository.save(
+                ConnectLog.builder()
+                        .type(ConnectType.LOGIN.name())
+                        .member(member)
+                        .build()
+        );
 
+        return new ResponseMessage<>(MessageCode.SUCCESS, MemberMapper.INSTANCE.memberToResponseDto(member));
     }
 
     @Transactional
