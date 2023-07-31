@@ -2,6 +2,7 @@ package com.example.todolist.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
@@ -17,6 +18,7 @@ public enum ErrorCode {
     FORBIDDEN_ERROR("서버 사용 권한이 없습니다.",403),
     NOT_FOUND_EMAIL("존재하지 않는 이메일입니다.", 404),
     INCORRECT_PASSWORD("비밀번호가 틀렸습니다.", 404),
+    LOCKED_MEMBER("해당 아이디는 잠금 처리되었습니다.", 400),
     SEARCH_KEYWORD_NOT_BLACK("검색어는 공백이 될 수 없습니다.", 400),
 
     CARD_CREATE_FAILED("카드 생성 실패", 500),

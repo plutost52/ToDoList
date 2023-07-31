@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -17,23 +18,42 @@ public class Member extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long memberNo;
+    private Long memberNo;
 
     @Column(nullable = false)
-    String memberEmail;
+    private String memberEmail;
 
     @Column(nullable = false)
-    String memberPwd;
+    private String memberPwd;
 
     @Column(nullable = false)
-    String memberName;
+    private String memberName;
 
     @Column(nullable = false)
-    String memberNickname;
+    private String memberNickname;
+
+    @Column
+    @Builder.Default
+    private int logInTryCount = 0;
+
+    @Column
+    private LocalDateTime lockedAt;
 
     public void update(String memberPwd, String memberNickname){
         this.memberPwd = memberPwd == null ? this.memberPwd : memberPwd;
         this.memberNickname = memberNickname == null ? this.memberNickname : memberNickname;
+    }
+
+    public void logInTryCountUpdate(boolean correct){
+        this.logInTryCount = correct ? 0 : this.logInTryCount+1;
+    }
+
+    public void lockMember(){
+        this.lockedAt = LocalDateTime.now();
+    }
+
+    public void unLockMember(){
+        this.lockedAt = null;
     }
 
 }
