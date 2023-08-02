@@ -36,6 +36,12 @@ public class MemberController {
         return memberService.login(memberRequestDto, response);
     }
 
+    @PostMapping(value = "/member/logOut")
+    public ResponseMessage<?> logOut(@AuthenticationPrincipal UserDetailsImpl userDetails) throws CustomException{
+        memberService.logOut(userDetails.getMember());
+        return new ResponseMessage<>(MessageCode.SUCCESS_MEMBER_LOGOUT, null);
+    }
+
     @PatchMapping(value = "/member")
     public ResponseMessage<?> updateMember(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                            @RequestBody MemberRequestDto memberRequestDto){

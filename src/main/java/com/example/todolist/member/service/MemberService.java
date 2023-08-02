@@ -93,6 +93,16 @@ public class MemberService {
     }
 
     @Transactional
+    public void logOut(Member member) {
+        connectLogRepository.save(
+                ConnectLog.builder()
+                        .type(ConnectType.LOGOUT.name())
+                        .member(member)
+                        .build()
+        );
+    }
+
+    @Transactional
     public void update(Member member, MemberRequestDto memberRequestDto) {
 
         Member isNicknameDuplicated = memberRepository.findByMemberNickname(memberRequestDto.getMemberNickname());
@@ -133,4 +143,6 @@ public class MemberService {
         }
         return memberResponseDtoList;
     }
+
+
 }
