@@ -30,9 +30,8 @@ public class CardController {
     }
 
     @DeleteMapping(value = "/card")
-    public ResponseMessage<String> deleteCard(@RequestBody CardRequestDto cardRequest) {
-
-        cardService.deleteCard(cardRequest);
+    public ResponseMessage<String> deleteCard(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody List<Long> cardList) {
+        cardService.deleteCard(userDetails.getMember(), cardList);
         return new ResponseMessage(MessageCode.CARD_DELETE_SUCCESS, null);
     }
 

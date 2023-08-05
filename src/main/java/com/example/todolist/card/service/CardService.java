@@ -12,11 +12,17 @@ import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
 import com.example.todolist.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static com.example.todolist.common.exception.ErrorCode.AUTH_FAIL;
+import static com.example.todolist.common.exception.ErrorCode.CARD_DELETE_BADREQUEST;
+
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CardService {
@@ -27,6 +33,7 @@ public class CardService {
     private final CardRepository cardRepository;
     private final CardLineRepository cardLineRepository;
 
+    @Transactional
     public void createCard(Member member) {
         cardRepository.save(Card.builder()
                 .cardTitle("")
@@ -35,20 +42,19 @@ public class CardService {
                 .build());
     };
 
-    public void deleteCard(CardRequestDto requestBody) {
+    @Transactional
+    public void deleteCard(Member member, List<Long> cardList) {
 
-        Long[] cardNoArr = requestBody.getCardNo();
+        List<Card> cards = cardRepository.findAllByCardNoIn(cardList);
 
-        if (cardNoArr == null || cardNoArr.length < 0)
-            throw new CustomException(ErrorCode.CARD_DELETE_BADREQUEST);
-        else {
-
-            Long result = cardDao.deleteCard(cardNoArr);
-            if (result == 0)
-                throw new CustomException(ErrorCode.CARD_CREATE_FAILED);
-
+        if(cards.size() != cardList.size()) throw new CustomException(CARD_DELETE_BADREQUEST);
+        for(Card card : cards){
+            if(!card.getMember().getMemberNo().equals(member.getMemberNo())){
+                throw new CustomException(AUTH_FAIL);
+            }
         }
 
+        cardRepository.deleteAllByCardNoIn(cardList);
     }
 
     public CardDto readCard(Long cardNo) {
