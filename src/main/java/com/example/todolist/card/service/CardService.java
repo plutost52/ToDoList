@@ -19,8 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-import static com.example.todolist.common.exception.ErrorCode.AUTH_FAIL;
-import static com.example.todolist.common.exception.ErrorCode.CARD_DELETE_BADREQUEST;
+import static com.example.todolist.common.exception.ErrorCode.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,10 +47,9 @@ public class CardService {
         List<Card> cards = cardRepository.findAllByCardNoIn(cardList);
 
         if(cards.size() != cardList.size()) throw new CustomException(CARD_DELETE_BADREQUEST);
+
         for(Card card : cards){
-            if(!card.getMember().getMemberNo().equals(member.getMemberNo())){
-                throw new CustomException(AUTH_FAIL);
-            }
+            checkAuth(card, member);
         }
 
         cardRepository.deleteAllByCardNoIn(cardList);
@@ -115,18 +113,20 @@ public class CardService {
         return result;
     };
 
-    public void updateCardTitle(Long cardNo, CardRequestDto cardRequest) {
+    @Transactional
+    public void updateCardTitle(Member member, Long cardNo, CardRequestDto cardRequest) {
 
         String cardTitle = cardRequest.getCardTitle();
 
-        if (cardNo <= 0 || cardTitle == "")
-            throw new CustomException(ErrorCode.CARD_UPDATE_TITLE_BADREQUEST);
-        Long result = cardDao.updateCardTitle(cardNo, cardTitle);
-        System.out.println(result);
+        if (cardNo <= 0 || cardTitle == "") throw new CustomException(ErrorCode.CARD_UPDATE_TITLE_BADREQUEST);
 
-        if (result == 0)
-            throw new CustomException(ErrorCode.CARD_UPDATE_TITLE_FAILED);
+        Card card = cardRepository.findById(cardNo).orElseThrow(
+                () -> new CustomException(CARD_READ_BADREQUEST)
+        );
 
+        checkAuth(card, member);
+
+        card.updateCardTitle(cardRequest.getCardTitle());
     }
 
     public void updateCardDone(CardRequestDto cardRequest) {
@@ -142,6 +142,12 @@ public class CardService {
         if (result == 0)
             throw new CustomException(ErrorCode.CARD_UPDATE_DONE_FAILED);
 
+    }
+
+    private void checkAuth(Card card, Member member){
+        if(!card.getMember().getMemberNo().equals(member.getMemberNo())){
+            throw new CustomException(AUTH_FAIL);
+        }
     }
 
 }

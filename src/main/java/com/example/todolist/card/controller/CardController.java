@@ -50,9 +50,9 @@ public class CardController {
     }
 
     @PutMapping(value = "/card/{cardNo}")
-    public ResponseMessage<String> updateCardTitle(@PathVariable("cardNo") Long cardNo, @RequestBody CardRequestDto cardRequest) {
+    public ResponseMessage<String> updateCardTitle(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("cardNo") Long cardNo, @RequestBody CardRequestDto cardRequest) {
 
-        cardService.updateCardTitle(cardNo, cardRequest);
+        cardService.updateCardTitle(userDetails.getMember(), cardNo, cardRequest);
         return new ResponseMessage(MessageCode.CARD_UPDATETITLE_SUCCESS, null);
     }
 
