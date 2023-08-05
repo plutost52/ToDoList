@@ -29,4 +29,8 @@ public class Card extends TimeStamp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberNo", nullable = false)
     private Member member;
+
+    public void updateCardTitle(String cardTitle){
+        this.cardTitle = cardTitle;
+    }
 }
