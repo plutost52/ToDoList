@@ -1,5 +1,6 @@
-package com.example.todolist.card.entity;
+package com.example.todolist.cardLine.entity;
 
+import com.example.todolist.card.entity.Card;
 import com.example.todolist.common.TimeStamp;
 import com.example.todolist.member.entity.Member;
 import lombok.AllArgsConstructor;
@@ -14,19 +15,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class Card extends TimeStamp {
+public class CardLine extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cardNo;
+    private Long LineNo;
 
     @Column
-    private String cardTitle;
+    private Boolean cardLineChecked;
 
-    @Column
-    private Boolean cardDone;
+    @Column String cardLineValue;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberNo", nullable = false)
-    private Member member;
+    @JoinColumn(name = "cardNo", nullable = false)
+    private Card card;
 }
