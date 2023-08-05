@@ -118,7 +118,7 @@ public class CardService {
 
         String cardTitle = cardRequest.getCardTitle();
 
-        if (cardNo <= 0 || cardTitle == "") throw new CustomException(ErrorCode.CARD_UPDATE_TITLE_BADREQUEST);
+        if (cardTitle == "") throw new CustomException(ErrorCode.CARD_UPDATE_TITLE_BADREQUEST);
 
         Card card = cardRepository.findById(cardNo).orElseThrow(
                 () -> new CustomException(CARD_READ_BADREQUEST)
@@ -129,18 +129,15 @@ public class CardService {
         card.updateCardTitle(cardRequest.getCardTitle());
     }
 
-    public void updateCardDone(CardRequestDto cardRequest) {
+    @Transactional
+    public void updateCardDone(Member member, CardRequestDto cardRequest) {
 
-        Boolean cardDone = cardRequest.getCardDone();
-        Long[] cardNoArr = cardRequest.getCardNo();
+        List<Card> cards = cardRepository.findAllByCardNoIn(cardRequest.getCardNo());
 
-        if (cardDone == null || cardNoArr == null || cardNoArr.length <= 0)
-            throw new CustomException(ErrorCode.CARD_UPDATE_DONE_BADREQUEST);
-
-        Long result = cardDao.updateCardDone(cardDone, cardNoArr);
-
-        if (result == 0)
-            throw new CustomException(ErrorCode.CARD_UPDATE_DONE_FAILED);
+        for(Card card : cards) {
+            checkAuth(card, member);
+            card.updateCardDone(cardRequest.getCardDone());
+        }
 
     }
 
