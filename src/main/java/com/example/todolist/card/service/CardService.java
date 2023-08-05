@@ -3,8 +3,11 @@ package com.example.todolist.card.service;
 import com.example.todolist.card.dao.CardDao;
 import com.example.todolist.card.dto.CardDto;
 import com.example.todolist.card.dto.CardRequestDto;
+import com.example.todolist.card.entity.Card;
+import com.example.todolist.card.repository.CardRepository;
 import com.example.todolist.cardLine.dao.CardLineDao;
 import com.example.todolist.cardLine.dto.CardLineDto;
+import com.example.todolist.cardLine.repository.CardLineRepository;
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
 import com.example.todolist.member.entity.Member;
@@ -21,11 +24,15 @@ public class CardService {
     private final CardDao cardDao;
     private final CardLineDao cardLineDao;
 
-    public void createCard(Member member) {
+    private final CardRepository cardRepository;
+    private final CardLineRepository cardLineRepository;
 
-        Long result = cardDao.createCard(member.getMemberNo());
-        if (result == 0)
-            throw new CustomException(ErrorCode.CARD_CREATE_FAILED);
+    public void createCard(Member member) {
+        cardRepository.save(Card.builder()
+                .cardTitle("")
+                .cardDone(false)
+                .member(member)
+                .build());
     };
 
     public void deleteCard(CardRequestDto requestBody) {
