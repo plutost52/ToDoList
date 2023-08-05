@@ -33,4 +33,8 @@ public class Card extends TimeStamp {
     public void updateCardTitle(String cardTitle){
         this.cardTitle = cardTitle;
     }
+
+    public void updateCardDone(Boolean cardDone) {
+        this.cardDone = cardDone;
+    }
 }

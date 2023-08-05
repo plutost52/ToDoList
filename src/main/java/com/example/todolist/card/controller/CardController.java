@@ -61,9 +61,9 @@ public class CardController {
                                                   HttpServletRequest request,
                                                   @RequestBody CardRequestDto cardRequest) {
 
-        cardService.updateCardDone(cardRequest);
-        List<CardDto> cardList = cardService.listCard(userDetails.getMember(), request);
-        return new ResponseMessage(MessageCode.CARD_UPDATEDONE_SUCCESS, cardList);
+        cardService.updateCardDone(userDetails.getMember(), cardRequest);
+        //List<CardDto> cardList = cardService.listCard(userDetails.getMember(), request);
+        return new ResponseMessage(MessageCode.CARD_UPDATEDONE_SUCCESS, null);
     }
 
 }
