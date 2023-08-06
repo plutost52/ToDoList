@@ -67,51 +67,15 @@ public class CardService {
         return CardMapper.INSTANCE.cardToResponseDto(card);
     };
 
-    public List<CardDto> listCard(Member member, HttpServletRequest request) {
-
-        List<CardDto> result = new ArrayList<CardDto>();
-        Long memberNo = member.getMemberNo();
-        String type = request.getRequestURI().contains("shared") ? "shared" : "my";
-
-        if (memberNo <= 0)
-            throw new CustomException(ErrorCode.CARD_LIST_BADREQUEST);
-
-        if (type.equals("my")) {
-
-            List<CardDto> cardList = cardDao.listCard(memberNo);
-            Long[] cardNoArr = new Long[cardList.size()];
-
-            for (Long i = 0L; i.intValue() < cardList.size(); i = i + 1L) {
-                CardDto card = cardList.get(i.intValue());
-                cardNoArr[i.intValue()] = card.getCardNo();
-            }
-
-            List<CardLineDto> cardLineList = cardLineDao.listCardLine(cardNoArr);
-
-            for (Long i = 0L; i.intValue() < cardList.size(); i++) {
-
-                CardDto card = cardList.get(i.intValue());
-                List<CardLineDto> cardLines = new ArrayList<CardLineDto>();
-
-                for (Long j = 0L; j.intValue() < cardLineList.size(); j++) {
-
-                    CardLineDto cardLine = cardLineList.get(j.intValue());
-                    if (cardLine.getCardNo() == card.getCardNo())
-                        cardLines.add(cardLine);
-                }
-
-                card.setCardLine(cardLines);
-                cardList.set(i.intValue(), card);
-            }
-
-            result = cardList;
-
-        } else {
-
+    @Transactional(readOnly = true)
+    public List<CardResponseDto> listCard(Member member) {
+        List<Card> cards = cardRepository.findAllByMember(member);
+        List<CardResponseDto> responseDtoList = new ArrayList<>();
+        for(Card card : cards) {
+            responseDtoList.add(CardMapper.INSTANCE.cardToResponseDto(card));
         }
-
-        return result;
-    };
+        return responseDtoList;
+    }
 
     @Transactional
     public void updateCardTitle(Member member, Long cardNo, CardRequestDto cardRequest) {
