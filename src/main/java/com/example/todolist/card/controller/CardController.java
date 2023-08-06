@@ -44,10 +44,10 @@ public class CardController {
     }
 
     @GetMapping(value = { "/card", "card/shared" })
-    public ResponseMessage<String> listCard(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletRequest request) {
+    public ResponseMessage<CardResponseDto> listCard(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        List<CardDto> cardList = cardService.listCard(userDetails.getMember(), request);
-        return new ResponseMessage(MessageCode.CARD_LIST_SUCCESS, cardList);
+        List<CardResponseDto> responseDtoList = cardService.listCard(userDetails.getMember());
+        return new ResponseMessage(MessageCode.CARD_LIST_SUCCESS, responseDtoList);
     }
 
     @PutMapping(value = "/card/{cardNo}")
