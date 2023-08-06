@@ -1,5 +1,6 @@
 package com.example.todolist.card.entity;
 
+import com.example.todolist.cardLine.entity.CardLine;
 import com.example.todolist.common.TimeStamp;
 import com.example.todolist.member.entity.Member;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -29,6 +32,9 @@ public class Card extends TimeStamp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberNo", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
+    private List<CardLine> cardLine = new ArrayList<>();
 
     public void updateCardTitle(String cardTitle){
         this.cardTitle = cardTitle;

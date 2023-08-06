@@ -2,6 +2,7 @@ package com.example.todolist.card.controller;
 
 import com.example.todolist.card.dto.CardDto;
 import com.example.todolist.card.dto.CardRequestDto;
+import com.example.todolist.card.dto.CardResponseDto;
 import com.example.todolist.card.service.CardService;
 import com.example.todolist.common.MessageCode;
 import com.example.todolist.common.ResponseMessage;
@@ -36,10 +37,10 @@ public class CardController {
     }
 
     @GetMapping(value = "/card/{cardNo}")
-    public ResponseMessage<String> readCard(@PathVariable("cardNo") Long cardNo) {
+    public ResponseMessage<?> readCard(@PathVariable("cardNo") Long cardNo) {
 
-        CardDto card = cardService.readCard(cardNo);
-        return new ResponseMessage(MessageCode.CARD_READ_SUCCESS, card);
+        CardResponseDto responseDto = cardService.readCard(cardNo);
+        return new ResponseMessage(MessageCode.CARD_READ_SUCCESS, responseDto);
     }
 
     @GetMapping(value = { "/card", "card/shared" })
