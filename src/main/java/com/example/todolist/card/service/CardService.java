@@ -3,7 +3,9 @@ package com.example.todolist.card.service;
 import com.example.todolist.card.dao.CardDao;
 import com.example.todolist.card.dto.CardDto;
 import com.example.todolist.card.dto.CardRequestDto;
+import com.example.todolist.card.dto.CardResponseDto;
 import com.example.todolist.card.entity.Card;
+import com.example.todolist.card.mapper.CardMapper;
 import com.example.todolist.card.repository.CardRepository;
 import com.example.todolist.cardLine.dao.CardLineDao;
 import com.example.todolist.cardLine.dto.CardLineDto;
@@ -55,16 +57,14 @@ public class CardService {
         cardRepository.deleteAllByCardNoIn(cardList);
     }
 
-    public CardDto readCard(Long cardNo) {
+    @Transactional(readOnly = true)
+    public CardResponseDto readCard(Long cardNo) {
 
-        if (cardNo <= 0L)
-            throw new CustomException(ErrorCode.CARD_READ_BADREQUEST);
+        Card card = cardRepository.findById(cardNo).orElseThrow(
+                () -> new CustomException(CARD_READ_BADREQUEST)
+        );
 
-        CardDto result = cardDao.readCard(cardNo);
-        if (result == null)
-            throw new CustomException(ErrorCode.CARD_READ_FAILED);
-        result.setCardLine(cardLineDao.listCardLine(new Long[] { result.getCardNo() }));
-        return result;
+        return CardMapper.INSTANCE.cardToResponseDto(card);
     };
 
     public List<CardDto> listCard(Member member, HttpServletRequest request) {

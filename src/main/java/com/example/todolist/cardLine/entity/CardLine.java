@@ -19,7 +19,7 @@ public class CardLine extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long LineNo;
+    private Long lineNo;
 
     @Column
     private Boolean cardLineChecked;
