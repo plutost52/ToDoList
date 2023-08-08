@@ -1,15 +1,10 @@
 package com.example.todolist.card.service;
 
-import com.example.todolist.card.dao.CardDao;
-import com.example.todolist.card.dto.CardDto;
 import com.example.todolist.card.dto.CardRequestDto;
 import com.example.todolist.card.dto.CardResponseDto;
 import com.example.todolist.card.entity.Card;
 import com.example.todolist.card.mapper.CardMapper;
 import com.example.todolist.card.repository.CardRepository;
-import com.example.todolist.cardLine.dao.CardLineDao;
-import com.example.todolist.cardLine.dto.CardLineDto;
-import com.example.todolist.cardLine.repository.CardLineRepository;
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
 import com.example.todolist.member.entity.Member;
@@ -18,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 import static com.example.todolist.common.exception.ErrorCode.*;
@@ -28,11 +22,7 @@ import static com.example.todolist.common.exception.ErrorCode.*;
 @Service
 public class CardService {
 
-    private final CardDao cardDao;
-    private final CardLineDao cardLineDao;
-
     private final CardRepository cardRepository;
-    private final CardLineRepository cardLineRepository;
 
     @Transactional
     public void createCard(Member member) {
