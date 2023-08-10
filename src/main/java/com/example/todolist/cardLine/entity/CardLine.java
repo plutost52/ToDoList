@@ -17,8 +17,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class CardLine extends TimeStamp {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long cardLineNo;
+
     private Long lineNo;
 
     @Column
@@ -29,4 +32,8 @@ public class CardLine extends TimeStamp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cardNo", nullable = false)
     private Card card;
+
+    public void checkCardLine(){
+        this.cardLineChecked = true;
+    }
 }

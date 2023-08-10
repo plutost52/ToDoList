@@ -38,9 +38,20 @@ public class CardLineService {
             throw new CustomException(ErrorCode.AUTH_FAIL);
 
         cardLineRepository.save(CardLine.builder()
+                        .lineNo(card.getCardLine().size() + 1L)
                         .cardLineValue(cardLineDto.getCardLineValue())
                         .cardLineChecked(false)
                         .card(card)
                         .build());
+    }
+
+    @Transactional
+    public void checkCardLine(Long cardLineNo) {
+
+        CardLine cardLine = cardLineRepository.findById(cardLineNo).orElseThrow(
+                () -> new CustomException(ErrorCode.CARD_READ_BADREQUEST)
+        );
+
+        cardLine.checkCardLine();
     }
 }
