@@ -1,6 +1,7 @@
 package com.example.todolist.card.dto;
 
 import com.example.todolist.cardLine.dto.CardLineDto;
+import com.example.todolist.cardLine.dto.CardLineResponseDto;
 import com.example.todolist.member.entity.Member;
 import lombok.*;
 
@@ -17,6 +18,6 @@ public class CardResponseDto {
     private Boolean cardDone;
     private String createdAt;
     private Long memberNo;
-    private List<CardLineDto> cardLine;
+    private List<CardLineResponseDto> cardLine;
 
 }
