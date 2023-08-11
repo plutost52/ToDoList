@@ -54,4 +54,18 @@ public class CardLineService {
 
         cardLine.checkCardLine();
     }
+
+    @Transactional
+    public void deleteCardLine(Member member, Long cardLineNo) {
+
+        CardLine cardLine = cardLineRepository.findById(cardLineNo).orElseThrow(
+                () -> new CustomException(ErrorCode.CARD_READ_BADREQUEST)
+        );
+
+        if(!cardLine.getCard().getMember().getMemberNo().equals(member.getMemberNo())){
+            throw new CustomException(ErrorCode.AUTH_FAIL);
+        }
+
+        cardLineRepository.delete(cardLine);
+    }
 }
