@@ -30,4 +30,12 @@ public class CardLineController {
         return new ResponseMessage(MessageCode.SUCCESS, null);
     }
 
+    @DeleteMapping(value = "/cardLine/{cardLineNo}")
+    public ResponseMessage<String> deleteCardLine(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                  @PathVariable Long cardLineNo) {
+
+        cardLineService.deleteCardLine(userDetails.getMember(), cardLineNo);
+        return new ResponseMessage(MessageCode.SUCCESS, null);
+    }
+
 }
