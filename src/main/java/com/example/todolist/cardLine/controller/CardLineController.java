@@ -23,12 +23,22 @@ public class CardLineController {
         return new ResponseMessage(MessageCode.CARDLINE_CREATE_SUCCESS, null);
     }
 
-    @PutMapping(value = "/cardLine/{cardLineNo}")
-    public ResponseMessage<String> checkCardLine(@PathVariable Long cardLineNo) {
+    @PutMapping(value = "/cardLine/{cardLineNo}/checked")
+    public ResponseMessage<String> checkCardLine(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long cardLineNo) {
 
-        cardLineService.checkCardLine(cardLineNo);
+        cardLineService.checkCardLine(userDetails.getMember(), cardLineNo);
         return new ResponseMessage(MessageCode.SUCCESS, null);
     }
+
+    @PutMapping(value = "/cardLine/{cardLineNo}/update")
+    public ResponseMessage<String> updateCardLine(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                  @PathVariable Long cardLineNo
+                                                , @RequestBody CardLineDto cardLineDto) {
+
+        cardLineService.updateCardLineValue(userDetails.getMember(), cardLineNo, cardLineDto);
+        return new ResponseMessage(MessageCode.SUCCESS, null);
+    }
+
 
     @DeleteMapping(value = "/cardLine/{cardLineNo}")
     public ResponseMessage<String> deleteCardLine(@AuthenticationPrincipal UserDetailsImpl userDetails,
