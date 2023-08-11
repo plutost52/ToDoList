@@ -2,7 +2,6 @@ package com.example.todolist.cardLine.entity;
 
 import com.example.todolist.card.entity.Card;
 import com.example.todolist.common.TimeStamp;
-import com.example.todolist.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +33,9 @@ public class CardLine extends TimeStamp {
     private Card card;
 
     public void checkCardLine(){
-        this.cardLineChecked = true;
+        this.cardLineChecked = !this.cardLineChecked;
+    }
+    public void updateCardLineValue(String cardLineValue){
+        this.cardLineValue = cardLineValue;
     }
 }

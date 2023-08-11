@@ -10,11 +10,12 @@ import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
 import com.example.todolist.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CardLineService {
@@ -46,13 +47,31 @@ public class CardLineService {
     }
 
     @Transactional
-    public void checkCardLine(Long cardLineNo) {
+    public void checkCardLine(Member member, Long cardLineNo) {
 
         CardLine cardLine = cardLineRepository.findById(cardLineNo).orElseThrow(
                 () -> new CustomException(ErrorCode.CARD_READ_BADREQUEST)
         );
 
+        if(!cardLine.getCard().getMember().getMemberNo().equals(member.getMemberNo())){
+            throw new CustomException(ErrorCode.AUTH_FAIL);
+        }
+
         cardLine.checkCardLine();
+    }
+
+    @Transactional
+    public void updateCardLineValue(Member member, Long cardLineNo, CardLineDto cardLineDto) {
+
+        CardLine cardLine = cardLineRepository.findById(cardLineNo).orElseThrow(
+                () -> new CustomException(ErrorCode.CARD_READ_BADREQUEST)
+        );
+
+        if(!cardLine.getCard().getMember().getMemberNo().equals(member.getMemberNo())){
+            throw new CustomException(ErrorCode.AUTH_FAIL);
+        }
+
+        cardLine.updateCardLineValue(cardLineDto.getCardLineValue());
     }
 
     @Transactional
