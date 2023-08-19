@@ -22,14 +22,16 @@ public class FriendService {
     private final MemberRepository memberRepository;
 
     public void addFriend(UserDetailsImpl userDetails, Long toFriendNo){
+        if(userDetails.getMember().getMemberNo().equals(toFriendNo))
+            throw new CustomException(ErrorCode.BAD_REQUEST_ERROR);
+
         memberRepository.findById(toFriendNo).orElseThrow(
                 () -> new CustomException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
-        List<Friend> friends = friendRepository.findAllByMember(userDetails.getMember());
-        if(friends.stream().anyMatch(friend -> friend.getToFriend().equals(toFriendNo))){
-            throw new CustomException(ErrorCode.FRIEND_DUPLICATED);
-        }
+        List<Friend> friends = friendRepository.findAllByMemberAndAndToFriend(userDetails.getMember(), toFriendNo);
+
+        if(friends.size() > 0)  throw new CustomException(ErrorCode.FRIEND_DUPLICATED);
 
         friendRepository.save(
                 Friend.builder()
@@ -37,6 +39,15 @@ public class FriendService {
                         .toFriend(toFriendNo)
                         .build()
         );
+    }
+
+    public void deleteFriend(UserDetailsImpl userDetails, Long toFriendNo){
+
+        List<Friend> friends = friendRepository.findAllByMemberAndAndToFriend(userDetails.getMember(), toFriendNo);
+
+        if(friends.size() == 0)  throw new CustomException(ErrorCode.FRIEND_NOT_FOUND);
+
+        friendRepository.deleteById(friends.get(0).getId());
     }
 
 }
