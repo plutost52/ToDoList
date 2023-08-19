@@ -9,7 +9,7 @@ import lombok.Setter;
 public enum ErrorCode {
 
     SERVER_ERROR("알 수 없는 서버 에러가 발생했습니다.", 500),
-
+    BAD_REQUEST_ERROR("잘못 된 요청입니다.", 400),
     AUTH_FAIL("해당 작업에 대한 권한이 없습니다.", 403),
     EMAIL_DUPLICATED("이미 존재하는 이메일입니다.", 500),
     NICKNAME_DUPLICATED("이미 존재하는 닉네임입니다.", 500),
@@ -20,6 +20,7 @@ public enum ErrorCode {
     INCORRECT_PASSWORD("비밀번호가 틀렸습니다.", 404),
     LOCKED_MEMBER("해당 아이디는 잠금 처리되었습니다.", 400),
     FRIEND_DUPLICATED("이미 등록 된 친구 입니다.", 400),
+    FRIEND_NOT_FOUND("친구를 찾을 수 없습니다.", 400),
     SEARCH_KEYWORD_NOT_BLACK("검색어는 공백이 될 수 없습니다.", 400),
 
     CARD_CREATE_FAILED("카드 생성 실패", 500),
