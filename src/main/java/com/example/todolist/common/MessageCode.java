@@ -14,7 +14,7 @@ public enum MessageCode {
     SUCCESS_SIGN_UP("회원가입 성공", 200),
     SUCCESS_MEMBER_UPDATE("회원 정보 수정 성공", 200),
     SUCCESS_MEMBER_LOGOUT("로그아웃 처리 성공", 200),
-
+    SUCCESS_FRIEND_ADD("친구추가 완료", 200),
     CARD_CREATE_SUCCESS("카드 추가 성공", 200),
     CARD_DELETE_SUCCESS("카드 삭제 성공", 200),
     CARD_READ_SUCCESS("카드 목록 조회 성공", 200),
