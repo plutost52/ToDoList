@@ -33,7 +33,7 @@ public class Card extends TimeStamp {
     @JoinColumn(name = "memberNo", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "card", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CardLine> cardLine = new ArrayList<>();
 
     public void updateCardTitle(String cardTitle){
