@@ -3,7 +3,10 @@ package com.example.todolist.member.service;
 
 import com.example.todolist.common.exception.CustomException;
 import com.example.todolist.common.exception.ErrorCode;
+import com.example.todolist.member.dto.FriendResponseDto;
 import com.example.todolist.member.entity.Friend;
+import com.example.todolist.member.entity.Member;
+import com.example.todolist.member.mapper.MemberMapper;
 import com.example.todolist.member.repository.FriendRepository;
 import com.example.todolist.member.repository.MemberRepository;
 import com.example.todolist.security.UserDetailsImpl;
@@ -12,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,4 +54,12 @@ public class FriendService {
         friendRepository.deleteById(friends.get(0).getId());
     }
 
+    public List<FriendResponseDto> getFreinds(UserDetailsImpl userDetails) {
+
+        List<Friend> friends = friendRepository.findAllByMember(userDetails.getMember());
+        List<Member> members = memberRepository.findByMemberNoIn(friends.stream()
+                .map(Friend::getToFriend).collect(Collectors.toList()));
+
+        return MemberMapper.INSTANCE.memberToFriendResponseDto(members);
+    }
 }
