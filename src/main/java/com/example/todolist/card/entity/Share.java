@@ -17,7 +17,7 @@ public class Share {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long sharedNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cardNo", nullable = false)
