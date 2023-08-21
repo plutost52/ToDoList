@@ -10,6 +10,7 @@ import com.example.todolist.member.entity.Member;
 import com.example.todolist.member.repository.FriendRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ShareService {
     private final CardRepository cardRepository;
     private final FriendRepository friendRepository;
 
+    @Transactional
     public void addShare(Member member, Long cardNo, List<Long> friends){
         Card card = cardRepository.findById(cardNo).orElseThrow(
                 ()->new CustomException(ErrorCode.CARD_READ_FAILED)
@@ -37,5 +39,17 @@ public class ShareService {
                     .done(false)
                     .card(card).build());
         });
+    }
+
+    @Transactional
+    public void deleteShare(Member member, Long sharedNo) {
+        Share share = shareRepository.findById(sharedNo).orElseThrow(
+                ()->new CustomException(ErrorCode.CARD_READ_FAILED)
+        );
+        if(!share.getToShare().equals(member.getMemberNo())
+                && !share.getCard().getMember().getMemberNo().equals(member.getMemberNo())){
+          throw new CustomException(ErrorCode.AUTH_FAIL);
+        }
+        shareRepository.deleteById(sharedNo);
     }
 }

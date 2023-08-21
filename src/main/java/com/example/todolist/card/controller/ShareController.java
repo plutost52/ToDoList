@@ -4,10 +4,7 @@ import com.example.todolist.card.service.ShareService;
 import com.example.todolist.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +19,11 @@ public class ShareController {
                          @PathVariable("cardNo") Long cardNo,
                          @RequestBody List<Long> friends){
         shareService.addShare(userDetails.getMember(), cardNo, friends);
+    }
+
+    @DeleteMapping("/share/{sharedNo}")
+    public void deleteShare(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                         @PathVariable("sharedNo") Long sharedNo){
+        shareService.deleteShare(userDetails.getMember(), sharedNo);
     }
 }
