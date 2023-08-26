@@ -34,10 +34,12 @@ public class ShareService {
 
         if(!card.getMember().getMemberNo().equals(member.getMemberNo()))
             throw new CustomException(ErrorCode.AUTH_FAIL);
-
-        //ToDo cardShare 중복 확인
+        
         friends.forEach(friend -> {
-
+            boolean isShared = shareRepository.findAllByMember(member).stream().anyMatch(
+                    share -> share.getToShare().equals(friend)
+            );
+            if(isShared) throw new CustomException(ErrorCode.CARD_SHARE_AREADY);
             shareRepository.save(Share.builder()
                     .member(member)
                     .toShare(friend)
