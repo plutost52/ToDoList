@@ -38,8 +38,9 @@ public enum ErrorCode {
     CARD_UPDATE_TITLE_FAILED("카드 제목 저장 실패", 500),
 
     CARD_UPDATE_DONE_BADREQUEST("수정 대상 정보 없음", 400),
-    CARD_UPDATE_DONE_FAILED("카드 상태변경 실패", 500);
+    CARD_UPDATE_DONE_FAILED("카드 상태변경 실패", 500),
 
+    CARD_SHARE_AREADY("이미 공유된 카드입니다.", 400);
     private final String msg;
     private final int statusCode;
 }
