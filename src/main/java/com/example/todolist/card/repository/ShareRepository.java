@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ShareRepository extends JpaRepository<Share, Long> {
     List<Share> findAllByMember(Member member);
+    List<Share> findAllByToShare(Long memberId);
+
 }

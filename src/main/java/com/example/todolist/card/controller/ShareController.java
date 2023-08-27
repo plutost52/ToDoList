@@ -30,6 +30,11 @@ public class ShareController {
         return new ResponseMessage(MessageCode.CARD_LIST_SUCCESS,shareService.getShareFromMe(userDetails));
     }
 
+    @GetMapping("/share/{memberNo}")
+    public ResponseMessage<List<CardResponseDto>> getShareToMe(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long memberNo){
+        return new ResponseMessage(MessageCode.CARD_LIST_SUCCESS,shareService.getShareToMe(userDetails, memberNo));
+    }
+
     @DeleteMapping("/share/{sharedNo}")
     public ResponseMessage<?> deleteShare(@AuthenticationPrincipal UserDetailsImpl userDetails,
                          @PathVariable("sharedNo") Long sharedNo){
