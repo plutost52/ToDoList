@@ -15,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -25,7 +26,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping(value = "/member")
-    public ResponseMessage<?> createMember(@RequestBody MemberRequestDto memberRequestDto){
+    public ResponseMessage<?> createMember(@RequestBody @Valid MemberRequestDto memberRequestDto){
         memberService.createMember(memberRequestDto);
         return new ResponseMessage<>(MessageCode.SUCCESS_SIGN_UP, null);
     }
